@@ -26,6 +26,14 @@ app.post('/agendamento', (req, res) => {
         return res.status(400).send('Todos os campos de dados da consulta são obrigatórios. Execeto o campo de observações.');
     }
 
+    const hoje = new Date();
+    const dataAgendamento = new Date(dados_agendamento.data_agendamento);
+    hoje.setHours(0, 0, 0, 0);
+
+    if (dataAgendamento <= hoje) {
+        return res.status(400).send('A data do agendamento deve ser futura.');
+    }
+
     res.render('agendamento.html', { dados_agendamento });
 });
 
