@@ -1,3 +1,5 @@
+const AgendamentoConsulta = require('../models/AgendamentoConsultaModel');
+
 let agendamentos = [];
 
 function getIndex(req, res){
@@ -20,12 +22,14 @@ function getIndex(req, res){
 }
 
 function getAgendamentos(req, res){
-    res.render("agendamentos.html", { agendamentos });
+    AgendamentoConsulta.findAll().then((agendamentos)=>{
+        res.render("agendamentos.html", { agendamentos });
+    });
 }
 
 function postAgendamento(req, res){
     let dados_agendamento = req.body;
-    console.log(dados_agendamento);
+    // console.log(dados_agendamento);
 
     let query_erros = ""
     let existe_erro = false;
@@ -82,8 +86,12 @@ function postAgendamento(req, res){
         res.redirect('/?'+query_erros);
     }
     else{
-        agendamentos.push(dados_agendamento);
-        res.render('agendamento.html', {dados_agendamento});
+        // agendamentos.push(dados_agendamento);
+        AgendamentoConsulta.create(dados_agendamento).then(()=>{
+            res.render('agendamento.html', {dados_agendamento});
+        }).catch((error)=>{
+            console.log("Erro ao criar agendamento: " + error);
+        });
     }
 }
 
